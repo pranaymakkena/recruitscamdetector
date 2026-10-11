@@ -1,0 +1,42 @@
+<nav class="navbar">
+  <div class="nav-inner">
+    <!-- Brand -->
+    <a class="brand" routerLink="/dashboard">
+      <div class="brand-icon">🛡️</div>
+      <div class="brand-text">
+        <span class="brand-name">TrustHire<span class="brand-ai"> AI</span></span>
+        <span class="brand-tagline">Recruitment Fraud Shield</span>
+      </div>
+    </a>
+
+    <!-- Desktop Nav -->
+    <ul class="nav-links">
+      @for (link of navLinks; track link.path) {
+        <li>
+          <a [routerLink]="link.path" routerLinkActive="active" class="nav-link">
+            <span class="nav-icon">{{ link.icon }}</span>
+            <span>{{ link.label }}</span>
+          </a>
+        </li>
+      }
+    </ul>
+
+    <!-- Badge -->
+    <div class="nav-right">
+      <span class="protected-badge">🔒 Protected</span>
+      <button class="hamburger" (click)="menuOpen = !menuOpen">☰</button>
+    </div>
+  </div>
+
+  <!-- Mobile Menu -->
+  @if (menuOpen) {
+    <div class="mobile-menu">
+      @for (link of navLinks; track link.path) {
+        <a [routerLink]="link.path" routerLinkActive="active"
+           class="mobile-link" (click)="menuOpen = false">
+          <span>{{ link.icon }}</span> {{ link.label }}
+        </a>
+      }
+    </div>
+  }
+</nav>

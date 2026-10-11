@@ -1,0 +1,103 @@
+# ========================
+# TrustHire AI — .gitignore
+# ========================
+
+# ---- Java / Maven ----
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+*.zip
+*.tar.gz
+*.rar
+hs_err_pid*
+replay_pid*
+
+# Maven wrapper
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# ---- Spring Boot ----
+HELP.md
+spring-shell.log
+
+# ---- Node / npm ----
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+package-lock.json
+yarn.lock
+
+# ---- Angular ----
+dist/
+tmp/
+out-tsc/
+bazel-out/
+.angular/cache/
+
+# ---- IDEs ----
+# IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# VS Code / Kiro
+.vscode/
+*.code-workspace
+
+# Eclipse
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# ---- OS Files ----
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V7
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ---- Logs ----
+*.log
+logs/
+
+# ---- Environment / Secrets ----
+.env
+.env.local
+.env.*.local
+*.secret
+application-local.properties
+application-prod.properties
+
+# ---- Test outputs ----
+/coverage
+*.lcov
+.nyc_output
+
+# ---- TypeScript ----
+*.js.map
+*.d.ts.map
+
+# ---- Misc ----
+*.patch
+*.orig

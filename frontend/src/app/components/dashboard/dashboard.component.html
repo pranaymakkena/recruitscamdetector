@@ -1,0 +1,192 @@
+<div class="dashboard fade-in">
+
+  <!-- Hero Banner -->
+  <div class="hero-banner">
+    <div class="hero-content">
+      <div class="hero-icon">🛡️</div>
+      <div>
+        <h1 class="hero-title">TrustHire <span class="gold">AI</span></h1>
+        <p class="hero-sub">Collaborative Intelligence Network for Recruitment Fraud Detection</p>
+      </div>
+    </div>
+    <div class="hero-actions">
+      <a routerLink="/analyze" class="btn btn-accent">🔍 Analyze a Job</a>
+      <a routerLink="/reports" class="btn btn-outline">🚨 Report Scam</a>
+    </div>
+  </div>
+
+  <!-- Stats Grid -->
+  @if (stats) {
+    <div class="grid-4 stats-section">
+      <div class="stat-card gold">
+        <span class="stat-icon">📋</span>
+        <div class="stat-value">{{ stats.totalJobsAnalyzed }}</div>
+        <div class="stat-label">Jobs Analyzed</div>
+        <div class="stat-trend">+12 this week</div>
+      </div>
+      <div class="stat-card maroon">
+        <span class="stat-icon">⚠️</span>
+        <div class="stat-value danger">{{ stats.highRiskJobs }}</div>
+        <div class="stat-label">High Risk Jobs</div>
+        <div class="stat-trend warn">Needs attention</div>
+      </div>
+      <div class="stat-card maroon">
+        <span class="stat-icon">🚫</span>
+        <div class="stat-value danger">{{ stats.flaggedJobs }}</div>
+        <div class="stat-label">Flagged as Fraud</div>
+        <div class="stat-trend warn">Confirmed scams</div>
+      </div>
+      <div class="stat-card green">
+        <span class="stat-icon">✅</span>
+        <div class="stat-value success">{{ stats.verifiedEmployers }}</div>
+        <div class="stat-label">Verified Employers</div>
+        <div class="stat-trend ok">Safe to apply</div>
+      </div>
+      <div class="stat-card gold">
+        <span class="stat-icon">🚨</span>
+        <div class="stat-value">{{ stats.communityReports }}</div>
+        <div class="stat-label">Community Reports</div>
+        <div class="stat-trend">{{ stats.verifiedReports }} verified</div>
+      </div>
+      <div class="stat-card maroon">
+        <span class="stat-icon">🔴</span>
+        <div class="stat-value danger">{{ stats.blacklistedEmployers }}</div>
+        <div class="stat-label">Blacklisted Companies</div>
+        <div class="stat-trend warn">Avoid these</div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon">📊</span>
+        <div class="stat-value">{{ stats.averageRiskScore | number:'1.0-0' }}</div>
+        <div class="stat-label">Avg Risk Score</div>
+        <div class="stat-trend">/100 scale</div>
+      </div>
+      <div class="stat-card green">
+        <span class="stat-icon">🎓</span>
+        <div class="stat-value success">{{ stats.verifiedReports }}</div>
+        <div class="stat-label">Reports Verified</div>
+        <div class="stat-trend ok">Community validated</div>
+      </div>
+    </div>
+  }
+
+  <!-- Risk Distribution + Recent Jobs -->
+  <div class="grid-2 main-grid">
+
+    <!-- Risk Distribution -->
+    <div class="card">
+      <h3 class="section-title">📊 Risk Distribution</h3>
+      <div class="risk-distribution">
+        @for (item of riskDistribution; track item.label) {
+          <div class="risk-row">
+            <div class="risk-label">
+              <span [class]="'badge badge-' + item.label.toLowerCase()">{{ item.label }}</span>
+            </div>
+            <div class="risk-bar-wrap">
+              <div class="risk-bar" [ngClass]="item.label.toLowerCase()"
+                   [style.width.%]="recentJobs.length ? (item.count / (stats?.totalJobsAnalyzed || 1)) * 100 : 0"></div>
+            </div>
+            <div class="risk-count">{{ item.count }}</div>
+          </div>
+        }
+      </div>
+
+      <div class="safety-tips">
+        <h4>🔔 Safety Tips</h4>
+        <ul>
+          <li>Never pay any fee to apply for a job</li>
+          <li>Verify company on LinkedIn before sharing documents</li>
+          <li>Real companies use official domain emails</li>
+          <li>Report suspicious jobs to your placement cell</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Recent Jobs -->
+    <div class="card">
+      <div class="section-header">
+        <h3 class="section-title">🔍 Recent Analyses</h3>
+        <a routerLink="/analyze" class="btn btn-sm btn-outline">View All</a>
+      </div>
+      @if (loading) {
+        <div class="spinner" style="margin: 30px auto"></div>
+      } @else if (recentJobs.length === 0) {
+        <div class="empty-state">
+          <span class="icon">📭</span>
+          <p>No jobs analyzed yet</p>
+          <a routerLink="/analyze" class="btn btn-accent btn-sm">Analyze First Job</a>
+        </div>
+      } @else {
+        <div class="jobs-list">
+          @for (job of recentJobs; track job.id) {
+            <div class="job-item">
+              <div class="job-header">
+                <div class="job-info">
+                  <span class="job-title">{{ job.title }}</span>
+                  <span class="job-company">{{ job.company }}</span>
+                </div>
+                <span [class]="getRiskClass(job.riskLevel)">{{ job.riskLevel }}</span>
+              </div>
+              <div class="job-footer">
+                <div class="risk-bar-container" style="flex:1">
+                  <div class="risk-bar" [ngClass]="getScoreBarClass(job.riskScore)"
+                       [style.width.%]="job.riskScore"></div>
+                </div>
+                <span class="score-label">{{ job.riskScore }}/100</span>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Community Reports -->
+  <div class="card">
+    <div class="section-header">
+      <h3 class="section-title">🚨 Top Community Reports</h3>
+      <a routerLink="/reports" class="btn btn-sm btn-outline">View All</a>
+    </div>
+    @if (recentReports.length === 0) {
+      <div class="empty-state">
+        <span class="icon">📢</span>
+        <p>No community reports yet. Be the first to report a scam.</p>
+      </div>
+    } @else {
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Company</th>
+              <th>Scam Type</th>
+              <th>College</th>
+              <th>Status</th>
+              <th>Upvotes</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (report of recentReports; track report.id) {
+              <tr>
+                <td><strong>{{ report.companyName }}</strong></td>
+                <td>{{ getScamTypeLabel(report.scamType) }}</td>
+                <td>{{ report.college || '—' }}</td>
+                <td><span [class]="getStatusClass(report.status || 'PENDING')">{{ report.status }}</span></td>
+                <td><span class="upvote">👍 {{ report.upvotes }}</span></td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+
+  <!-- Alert Banner -->
+  <div class="alert alert-warning network-alert">
+    <span>🌐</span>
+    <div>
+      <strong>Collaborative Intelligence Network Active</strong><br>
+      This platform aggregates reports from {{ stats?.communityReports || 0 }} students across multiple colleges.
+      Together we've protected thousands of students from recruitment fraud.
+    </div>
+  </div>
+
+</div>

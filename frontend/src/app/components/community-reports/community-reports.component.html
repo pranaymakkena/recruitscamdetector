@@ -1,0 +1,149 @@
+<div class="reports-page fade-in">
+
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">🚨 Community Reports</h1>
+      <p class="page-subtitle">Student-driven recruitment scam intelligence network</p>
+    </div>
+    <button class="btn btn-accent" (click)="showForm = !showForm">
+      {{ showForm ? '✕ Cancel' : '+ Report a Scam' }}
+    </button>
+  </div>
+
+  @if (success) {
+    <div class="alert alert-success">✅ {{ success }}</div>
+  }
+
+  <!-- Report Form -->
+  @if (showForm) {
+    <div class="card form-card fade-in">
+      <h3 class="card-title">📢 Submit Scam Report</h3>
+      <p style="color:var(--text-muted);font-size:0.85rem;margin-bottom:20px">
+        Your report helps protect other students. All submissions are reviewed by our team.
+      </p>
+
+      @if (error) {
+        <div class="alert alert-danger" style="margin-bottom:16px">⚠️ {{ error }}</div>
+      }
+
+      <form (ngSubmit)="submit()">
+        <div class="grid-3">
+          <div class="form-group">
+            <label class="form-label">Your Name *</label>
+            <input class="form-control" [(ngModel)]="form.reporterName" name="reporterName"
+                   placeholder="Full name" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Your Email</label>
+            <input class="form-control" [(ngModel)]="form.reporterEmail" name="reporterEmail"
+                   type="email" placeholder="your@college.edu" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Your College</label>
+            <input class="form-control" [(ngModel)]="form.college" name="college"
+                   placeholder="e.g. IIT Bombay" />
+          </div>
+        </div>
+
+        <div class="grid-3">
+          <div class="form-group">
+            <label class="form-label">Company Name *</label>
+            <input class="form-control" [(ngModel)]="form.companyName" name="companyName"
+                   placeholder="Scammer company name" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Job Title</label>
+            <input class="form-control" [(ngModel)]="form.jobTitle" name="jobTitle"
+                   placeholder="Advertised role" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Scam Type *</label>
+            <select class="form-control" [(ngModel)]="form.scamType" name="scamType">
+              @for (t of scamTypes; track t.value) {
+                <option [value]="t.value">{{ t.label }}</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">What happened? *</label>
+          <textarea class="form-control" [(ngModel)]="form.description" name="description"
+                    rows="4" placeholder="Describe the scam in detail — what they asked, what happened, any contact details..."
+                    required></textarea>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-danger">🚨 Submit Report</button>
+          <button type="button" class="btn btn-outline" (click)="showForm = false">Cancel</button>
+        </div>
+      </form>
+    </div>
+  }
+
+  <!-- Filters -->
+  <div class="filters">
+    <div class="filter-group">
+      <span class="filter-label">Status:</span>
+      <button [class]="'filter-btn' + (filterStatus === 'ALL' ? ' active' : '')"
+              (click)="filterStatus = 'ALL'; applyFilter()">All</button>
+      <button [class]="'filter-btn' + (filterStatus === 'PENDING' ? ' active' : '')"
+              (click)="filterStatus = 'PENDING'; applyFilter()">🕐 Pending</button>
+      <button [class]="'filter-btn' + (filterStatus === 'VERIFIED' ? ' active' : '')"
+              (click)="filterStatus = 'VERIFIED'; applyFilter()">✅ Verified</button>
+    </div>
+    <div class="filter-group">
+      <span class="filter-label">Type:</span>
+      <button [class]="'filter-btn' + (filterType === 'ALL' ? ' active' : '')"
+              (click)="filterType = 'ALL'; applyFilter()">All</button>
+      @for (t of scamTypes; track t.value) {
+        <button [class]="'filter-btn' + (filterType === t.value ? ' active' : '')"
+                (click)="filterType = t.value; applyFilter()">{{ t.label }}</button>
+      }
+    </div>
+  </div>
+
+  <!-- Reports List -->
+  @if (loading) {
+    <div class="spinner" style="margin: 60px auto"></div>
+  } @else if (filtered.length === 0) {
+    <div class="empty-state">
+      <span class="icon">📭</span>
+      <p>No reports found</p>
+    </div>
+  } @else {
+    <div class="reports-grid">
+      @for (report of filtered; track report.id) {
+        <div class="report-card card">
+          <div class="report-header">
+            <div class="report-meta">
+              <span class="company-name">{{ report.companyName }}</span>
+              @if (report.jobTitle) {
+                <span class="job-title-tag">{{ report.jobTitle }}</span>
+              }
+            </div>
+            <span [class]="getStatusClass(report.status || 'PENDING')">{{ report.status }}</span>
+          </div>
+
+          <div class="scam-type-tag">{{ getScamLabel(report.scamType) }}</div>
+
+          <p class="report-desc">{{ report.description }}</p>
+
+          <div class="report-footer">
+            <div class="reporter-info">
+              <span class="reporter">👤 {{ report.reporterName }}</span>
+              @if (report.college) {
+                <span class="college">🎓 {{ report.college }}</span>
+              }
+              <span class="date">📅 {{ formatDate(report.reportedAt) }}</span>
+            </div>
+            <button class="upvote-btn" (click)="upvote(report.id!)">
+              👍 {{ report.upvotes }}
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+</div>

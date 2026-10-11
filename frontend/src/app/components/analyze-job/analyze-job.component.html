@@ -1,0 +1,261 @@
+<div class="analyze-page fade-in">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">🔍 AI Job Analysis</h1>
+      <p class="page-subtitle">Submit a job posting for fraud detection analysis</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-outline btn-sm" (click)="loadExample('safe')">📋 Load Safe Example</button>
+      <button class="btn btn-outline btn-sm" (click)="loadExample('scam')">🚨 Load Scam Example</button>
+    </div>
+  </div>
+
+  <div class="analyze-grid">
+    <!-- Form -->
+    <div class="card form-card">
+      <h3 class="card-title">📝 Job Details</h3>
+      <p class="card-sub">Fields marked with * are required</p>
+
+      @if (error) {
+        <div class="alert alert-danger" style="margin-bottom:16px">⚠️ {{ error }}</div>
+      }
+
+      <form (ngSubmit)="submit()">
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">Job Title *</label>
+            <input class="form-control" [(ngModel)]="form.title" name="title"
+                   placeholder="e.g. Software Engineer" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Company Name *</label>
+            <input class="form-control" [(ngModel)]="form.company" name="company"
+                   placeholder="e.g. Infosys Limited" required />
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">Location</label>
+            <input class="form-control" [(ngModel)]="form.location" name="location"
+                   placeholder="e.g. Bengaluru, Karnataka" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Contact Email</label>
+            <input class="form-control" [(ngModel)]="form.contactEmail" name="contactEmail"
+                   type="email" placeholder="hr@company.com" />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Job Description *</label>
+          <textarea class="form-control" [(ngModel)]="form.description" name="description"
+                    rows="6" placeholder="Paste the full job description here..."
+                    required></textarea>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label class="form-label">Source URL</label>
+            <input class="form-control" [(ngModel)]="form.sourceUrl" name="sourceUrl"
+                   placeholder="https://..." />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Submitted By</label>
+            <input class="form-control" [(ngModel)]="form.submittedBy" name="submittedBy"
+                   placeholder="Your name or college" />
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-accent" [disabled]="loading">
+            @if (loading) {
+              <span class="btn-spinner"></span> Analyzing...
+            } @else {
+              🤖 Analyze for Fraud
+            }
+          </button>
+          <button type="button" class="btn btn-outline" (click)="reset()" [disabled]="loading">🔄 Reset</button>
+        </div>
+
+        @if (loading) {
+          <div class="progress-section">
+            <div class="progress-header">
+              <span class="progress-label">{{ progressLabel }}</span>
+              <span class="progress-pct">{{ progress }}%</span>
+            </div>
+            <div class="progress-track">
+              <div class="progress-fill" [style.width.%]="progress"></div>
+            </div>
+            <div class="analysis-steps">
+              <span [class]="progress >= 15 ? 'step done' : 'step'">🔍 Keywords</span>
+              <span [class]="progress >= 35 ? 'step done' : 'step'">📧 Email</span>
+              <span [class]="progress >= 55 ? 'step done' : 'step'">🧠 Patterns</span>
+              <span [class]="progress >= 72 ? 'step done' : 'step'">📊 Score</span>
+              <span [class]="progress >= 88 ? 'step done' : 'step'">🤖 AI</span>
+              <span [class]="progress >= 95 ? 'step done' : 'step'">✅ Report</span>
+            </div>
+          </div>
+        }
+      </form>
+    </div>
+
+    <!-- How it works -->
+    <div class="how-it-works">
+      <div class="card info-card">
+        <h3 class="card-title">🤖 How AI Analysis Works</h3>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div>
+              <strong>Keyword Scanning</strong>
+              <p>Detects 50+ scam keywords like "registration fee", "pay to apply", "guaranteed job"</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div>
+              <strong>Email Domain Check</strong>
+              <p>Flags personal email domains (Gmail, Yahoo) used instead of official corporate emails</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div>
+              <strong>Pattern Recognition</strong>
+              <p>Identifies suspicious phrases, salary claims, urgency tactics, and identity red flags</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">4</div>
+            <div>
+              <strong>Risk Score</strong>
+              <p>Generates 0-100 explainable risk score with supporting evidence for each flag</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card tips-card">
+        <h3 class="card-title">⚠️ Common Red Flags</h3>
+        <div class="flags-list">
+          <span class="flag-item danger">Payment required to join</span>
+          <span class="flag-item danger">Personal email (Gmail/Yahoo)</span>
+          <span class="flag-item danger">Unrealistic daily salary</span>
+          <span class="flag-item warning">No interview process</span>
+          <span class="flag-item warning">WhatsApp-only contact</span>
+          <span class="flag-item warning">Limited seats urgency</span>
+          <span class="flag-item low">Vague job description</span>
+          <span class="flag-item low">Unverified company</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Result Section -->
+  @if (result) {
+    <div id="result-section" class="result-section fade-in">
+
+      <!-- Risk Score Hero -->
+      <div class="result-hero" [ngClass]="result.riskLevel.toLowerCase()">
+        <div class="result-emoji">{{ getRiskEmoji(result.riskLevel) }}</div>
+        <div class="result-main">
+          <div class="result-headline">
+            <h2>Risk Assessment Complete</h2>
+            <span [class]="getRiskClass(result.riskLevel)">{{ result.riskLevel }} RISK</span>
+          </div>
+          <p class="result-message">{{ getRiskMessage(result.riskLevel) }}</p>
+        </div>
+        <div class="score-circle" [ngClass]="result.riskLevel.toLowerCase()">
+          <div class="score-num">{{ result.riskScore }}</div>
+          <div class="score-max">/100</div>
+        </div>
+      </div>
+
+      <!-- Score Bar -->
+      <div class="score-bar-section card">
+        <div class="score-bar-header">
+          <span>Risk Score</span>
+          <strong>{{ result.riskScore }} / 100</strong>
+        </div>
+        <div class="risk-bar-container">
+          <div class="risk-bar" [ngClass]="getScoreBarClass(result.riskScore)"
+               [style.width.%]="result.riskScore"></div>
+        </div>
+        <div class="score-scale">
+          <span class="scale-low">Safe (0-19)</span>
+          <span class="scale-medium">Medium (20-44)</span>
+          <span class="scale-high">High (45-69)</span>
+          <span class="scale-critical">Critical (70+)</span>
+        </div>
+      </div>
+
+      <div class="result-grid">
+        <!-- AI Analysis -->
+        <div class="card">
+          <h3 class="card-title">🤖 AI Analysis</h3>
+          <p class="ai-text">{{ result.aiAnalysis }}</p>
+
+          @if (result.flaggedAsFraud) {
+            <div class="fraud-alert">
+              <span class="fraud-icon">🚫</span>
+              <div>
+                <strong>AUTOMATICALLY FLAGGED AS FRAUD</strong>
+                <p>This posting has been added to the fraud database and will be visible to all placement officers.</p>
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- Risk Factors -->
+        <div class="card">
+          <h3 class="card-title">📋 Evidence & Risk Factors</h3>
+          <div class="risk-factors">
+            @for (factor of riskFactorsList; track factor) {
+              <div class="risk-factor-item">{{ factor }}</div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Job Details Summary -->
+      <div class="card job-summary">
+        <h3 class="card-title">📄 Submitted Job Details</h3>
+        <div class="summary-grid">
+          <div class="summary-item">
+            <span class="s-label">Job Title</span>
+            <span class="s-value">{{ result.title }}</span>
+          </div>
+          <div class="summary-item">
+            <span class="s-label">Company</span>
+            <span class="s-value">{{ result.company }}</span>
+          </div>
+          <div class="summary-item">
+            <span class="s-label">Location</span>
+            <span class="s-value">{{ result.location || '—' }}</span>
+          </div>
+          <div class="summary-item">
+            <span class="s-label">Contact Email</span>
+            <span class="s-value">{{ result.contactEmail || '—' }}</span>
+          </div>
+          <div class="summary-item">
+            <span class="s-label">Submitted By</span>
+            <span class="s-value">{{ result.submittedBy || '—' }}</span>
+          </div>
+          <div class="summary-item">
+            <span class="s-label">Analysis ID</span>
+            <span class="s-value">#{{ result.id }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="result-actions">
+        <button class="btn btn-outline" (click)="reset()">🔍 Analyze Another Job</button>
+        <a href="/reports" class="btn btn-danger">🚨 Report This Job</a>
+      </div>
+    </div>
+  }
+
+</div>

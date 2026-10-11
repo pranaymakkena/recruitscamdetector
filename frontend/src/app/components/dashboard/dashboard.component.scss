@@ -1,0 +1,222 @@
+.dashboard {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* Hero */
+.hero-banner {
+  background: linear-gradient(135deg, var(--bg-card) 0%, #3D0000 50%, var(--bg-card) 100%);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(244,196,48,0.05) 0%, transparent 70%);
+    pointer-events: none;
+  }
+}
+
+.hero-content {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.hero-icon {
+  font-size: 3.5rem;
+  filter: drop-shadow(0 0 16px rgba(244,196,48,0.5));
+}
+
+.hero-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.1;
+}
+
+.gold { color: var(--accent); }
+
+.hero-sub {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-top: 6px;
+}
+
+.hero-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* Stats */
+.stats-section {
+  .stat-value {
+    &.danger  { color: #EF5350; }
+    &.success { color: #66BB6A; }
+  }
+  .stat-trend {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    &.warn { color: #FFA726; }
+    &.ok   { color: #66BB6A; }
+  }
+}
+
+/* Section Headers */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.section-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Main grid */
+.main-grid { align-items: start; }
+
+/* Risk Distribution */
+.risk-distribution {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+
+.risk-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.risk-label { width: 100px; flex-shrink: 0; }
+
+.risk-bar-wrap {
+  flex: 1;
+  background: rgba(255,255,255,0.07);
+  border-radius: 6px;
+  height: 10px;
+  overflow: hidden;
+}
+
+.risk-count {
+  width: 30px;
+  text-align: right;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* Safety tips */
+.safety-tips {
+  background: rgba(244,196,48,0.06);
+  border: 1px solid rgba(244,196,48,0.2);
+  border-radius: 12px;
+  padding: 16px;
+
+  h4 { font-size: 0.9rem; color: var(--accent); margin-bottom: 10px; }
+
+  ul {
+    padding-left: 16px;
+    li {
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      margin-bottom: 6px;
+      line-height: 1.4;
+    }
+  }
+}
+
+/* Jobs list */
+.jobs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.job-item {
+  padding: 14px;
+  background: var(--bg-surface);
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  transition: all 0.2s ease;
+
+  &:hover { border-color: var(--primary-light); }
+}
+
+.job-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.job-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.job-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.job-company {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.job-footer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.score-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+/* Upvote */
+.upvote {
+  background: rgba(244,196,48,0.1);
+  border: 1px solid rgba(244,196,48,0.2);
+  color: var(--accent);
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.network-alert { margin-top: 4px; }
+
+@media (max-width: 768px) {
+  .hero-banner { flex-direction: column; text-align: center; }
+  .hero-content { flex-direction: column; }
+  .hero-title { font-size: 1.8rem; }
+  .hero-actions { justify-content: center; }
+}

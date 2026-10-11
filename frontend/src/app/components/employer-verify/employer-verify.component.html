@@ -1,0 +1,140 @@
+<div class="employers-page fade-in">
+
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">🏢 Employer Verification</h1>
+      <p class="page-subtitle">Check company trustworthiness before applying</p>
+    </div>
+    <button class="btn btn-accent" (click)="showAddForm = !showAddForm">
+      {{ showAddForm ? '✕ Cancel' : '+ Add Company' }}
+    </button>
+  </div>
+
+  @if (success) {
+    <div class="alert alert-success">✅ {{ success }}</div>
+  }
+
+  <!-- Add Form -->
+  @if (showAddForm) {
+    <div class="card fade-in">
+      <h3 style="font-size:1rem;font-weight:600;margin-bottom:16px">➕ Add New Employer</h3>
+      <form (ngSubmit)="addEmployer()">
+        <div class="grid-3">
+          <div class="form-group">
+            <label class="form-label">Company Name *</label>
+            <input class="form-control" [(ngModel)]="form.companyName" name="companyName"
+                   placeholder="Legal company name" required />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Website</label>
+            <input class="form-control" [(ngModel)]="form.website" name="website"
+                   placeholder="https://company.com" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Industry</label>
+            <input class="form-control" [(ngModel)]="form.industry" name="industry"
+                   placeholder="e.g. IT Services" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">LinkedIn URL</label>
+          <input class="form-control" [(ngModel)]="form.linkedinUrl" name="linkedinUrl"
+                 placeholder="https://linkedin.com/company/..." style="max-width:500px" />
+        </div>
+        <button type="submit" class="btn btn-accent">✅ Add Employer</button>
+      </form>
+    </div>
+  }
+
+  <!-- Search + Filter -->
+  <div class="search-filter-bar">
+    <div class="search-box">
+      <input class="form-control" [(ngModel)]="searchQuery" (input)="search()"
+             placeholder="🔍 Search company name..." />
+    </div>
+    <div class="status-filters">
+      @for (s of ['ALL','VERIFIED','SUSPICIOUS','BLACKLISTED','UNKNOWN']; track s) {
+        <button [class]="'filter-btn' + (filterStatus === s ? ' active' : '')"
+                (click)="filterStatus = s; applyFilter()">{{ s }}</button>
+      }
+    </div>
+  </div>
+
+  <!-- Stats row -->
+  <div class="employer-stats">
+    <div class="stat-chip verified">
+      ✅ {{ employers | verifiedCount }} Verified
+    </div>
+    <div class="stat-chip suspicious">
+      ⚠️ {{ employers | statusCount:'SUSPICIOUS' }} Suspicious
+    </div>
+    <div class="stat-chip blacklisted">
+      🚫 {{ employers | statusCount:'BLACKLISTED' }} Blacklisted
+    </div>
+    <div class="stat-chip total">
+      📊 {{ employers.length }} Total
+    </div>
+  </div>
+
+  <!-- Employers Grid -->
+  @if (loading) {
+    <div class="spinner" style="margin: 60px auto"></div>
+  } @else if (filtered.length === 0) {
+    <div class="empty-state">
+      <span class="icon">🏢</span>
+      <p>No employers found</p>
+    </div>
+  } @else {
+    <div class="employers-grid">
+      @for (emp of filtered; track emp.id) {
+        <div class="employer-card card" [ngClass]="(emp.verificationStatus || 'UNKNOWN').toLowerCase()">
+          <div class="emp-header">
+            <div class="emp-name-row">
+              <span class="status-icon">{{ getStatusIcon(emp.verificationStatus) }}</span>
+              <div>
+                <div class="emp-name">{{ emp.companyName }}</div>
+                @if (emp.industry) {
+                  <div class="emp-industry">{{ emp.industry }}</div>
+                }
+              </div>
+            </div>
+            <span [class]="getStatusClass(emp.verificationStatus)">
+              {{ emp.verificationStatus }}
+            </span>
+          </div>
+
+          <!-- Trust Score -->
+          <div class="trust-score-section">
+            <div class="trust-header">
+              <span class="trust-label">Trust Score</span>
+              <strong class="trust-num">{{ emp.trustScore }}/100</strong>
+            </div>
+            <div class="risk-bar-container">
+              <div class="trust-bar" [ngClass]="getTrustBarClass(emp.trustScore || 50)"
+                   [style.width.%]="emp.trustScore || 50"></div>
+            </div>
+          </div>
+
+          @if (emp.website) {
+            <a [href]="emp.website" target="_blank" class="emp-link">🌐 {{ emp.website }}</a>
+          }
+          @if (emp.linkedinUrl) {
+            <a [href]="emp.linkedinUrl" target="_blank" class="emp-link">💼 LinkedIn Profile</a>
+          }
+
+          @if (emp.verificationNotes) {
+            <p class="emp-notes">{{ emp.verificationNotes }}</p>
+          }
+
+          <div class="emp-footer">
+            @if (emp.reportCount && emp.reportCount > 0) {
+              <span class="report-count">🚨 {{ emp.reportCount }} reports</span>
+            }
+            <span class="emp-date">Updated: {{ formatDate(emp.lastChecked) }}</span>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+</div>

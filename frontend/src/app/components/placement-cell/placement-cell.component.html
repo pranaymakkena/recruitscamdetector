@@ -1,0 +1,280 @@
+<div class="placement-page fade-in">
+
+  <!-- Header -->
+  <div class="cell-header">
+    <div class="cell-title-area">
+      <div class="cell-icon">🎓</div>
+      <div>
+        <h1 class="page-title">Placement Cell Dashboard</h1>
+        <p class="page-subtitle">College recruitment intelligence & fraud oversight portal</p>
+      </div>
+    </div>
+    <div class="college-badge">
+      <span>🏛️</span> Placement Officer View
+    </div>
+  </div>
+
+  @if (updateSuccess) {
+    <div class="alert alert-success">✅ {{ updateSuccess }}</div>
+  }
+
+  <!-- Tabs -->
+  <div class="tab-bar">
+    @for (tab of [
+      {id:'overview', label:'📊 Overview'},
+      {id:'flagged',  label:'🚫 Flagged Jobs (' + flaggedJobs.length + ')'},
+      {id:'reports',  label:'🚨 Pending Reports (' + pendingReports.length + ')'},
+      {id:'all',      label:'📋 All Analyses'}
+    ]; track tab.id) {
+      <button [class]="'tab-btn' + (activeTab === tab.id ? ' active' : '')"
+              (click)="activeTab = tab.id">{{ tab.label }}</button>
+    }
+  </div>
+
+  <!-- OVERVIEW TAB -->
+  @if (activeTab === 'overview' && stats) {
+    <div class="overview-section fade-in">
+
+      <div class="grid-4">
+        <div class="stat-card gold">
+          <span class="stat-icon">📋</span>
+          <div class="stat-value">{{ stats.totalJobsAnalyzed }}</div>
+          <div class="stat-label">Total Analyzed</div>
+        </div>
+        <div class="stat-card maroon">
+          <span class="stat-icon">🚫</span>
+          <div class="stat-value" style="color:#EF5350">{{ stats.flaggedJobs }}</div>
+          <div class="stat-label">Fraud Confirmed</div>
+        </div>
+        <div class="stat-card green">
+          <span class="stat-icon">✅</span>
+          <div class="stat-value" style="color:#66BB6A">{{ stats.verifiedEmployers }}</div>
+          <div class="stat-label">Safe Employers</div>
+        </div>
+        <div class="stat-card maroon">
+          <span class="stat-icon">🚨</span>
+          <div class="stat-value">{{ pendingReports.length }}</div>
+          <div class="stat-label">Pending Review</div>
+        </div>
+      </div>
+
+      <!-- Breakdown by risk -->
+      <div class="card">
+        <h3 class="section-title" style="margin-bottom:20px">📊 Jobs by Risk Level</h3>
+        @for (group of jobsByRisk; track group.level) {
+          <div class="risk-group">
+            <div class="risk-group-header">
+              <span [class]="getRiskClass(group.level)">{{ group.level }}</span>
+              <span class="group-count">{{ group.jobs.length }} jobs</span>
+            </div>
+            <div class="group-jobs">
+              @for (job of group.jobs.slice(0,3); track job.id) {
+                <div class="mini-job">
+                  <span class="mj-title">{{ job.title }}</span>
+                  <span class="mj-company">{{ job.company }}</span>
+                  <span class="mj-score">{{ job.riskScore }}</span>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="grid-2">
+        <div class="card action-card">
+          <h3 class="card-title">⚡ Quick Actions</h3>
+          <div class="actions-list">
+            <a routerLink="/analyze" class="action-item">
+              <span class="action-icon">🔍</span>
+              <div>
+                <strong>Analyze Suspicious Job</strong>
+                <p>Submit a job description for AI fraud analysis</p>
+              </div>
+            </a>
+            <a routerLink="/reports" class="action-item">
+              <span class="action-icon">🚨</span>
+              <div>
+                <strong>View All Reports</strong>
+                <p>Browse community-submitted scam reports</p>
+              </div>
+            </a>
+            <a routerLink="/employers" class="action-item">
+              <span class="action-icon">🏢</span>
+              <div>
+                <strong>Employer Registry</strong>
+                <p>Verify and manage employer trust scores</p>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title">📢 Advisory Notice</h3>
+          <div class="advisory">
+            <div class="advisory-item critical">
+              <strong>🚨 Alert Students</strong>
+              <p>{{ stats.flaggedJobs }} job postings have been confirmed as fraudulent. Send an advisory to all registered students.</p>
+            </div>
+            <div class="advisory-item warning">
+              <strong>⚠️ Under Review</strong>
+              <p>{{ stats.highRiskJobs }} high-risk postings are awaiting officer review.</p>
+            </div>
+            <div class="advisory-item success">
+              <strong>✅ Network Status</strong>
+              <p>TrustHire AI collaborative network is active and protecting students.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- FLAGGED JOBS TAB -->
+  @if (activeTab === 'flagged') {
+    <div class="flagged-section fade-in">
+      @if (flaggedJobs.length === 0) {
+        <div class="empty-state">
+          <span class="icon">🎉</span>
+          <p>No fraudulent jobs detected!</p>
+        </div>
+      } @else {
+        <div class="card">
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Job Title</th>
+                  <th>Company</th>
+                  <th>Risk Score</th>
+                  <th>Level</th>
+                  <th>Submitted By</th>
+                  <th>Date</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (job of flaggedJobs; track job.id) {
+                  <tr>
+                    <td><strong>{{ job.title }}</strong></td>
+                    <td>{{ job.company }}</td>
+                    <td>
+                      <div style="display:flex;align-items:center;gap:8px;min-width:100px">
+                        <div class="risk-bar-container" style="width:70px">
+                          <div class="risk-bar" [ngClass]="getScoreBarClass(job.riskScore)"
+                               [style.width.%]="job.riskScore"></div>
+                        </div>
+                        <span style="font-size:0.8rem;font-weight:600">{{ job.riskScore }}</span>
+                      </div>
+                    </td>
+                    <td><span [class]="getRiskClass(job.riskLevel)">{{ job.riskLevel }}</span></td>
+                    <td>{{ job.submittedBy || '—' }}</td>
+                    <td>{{ formatDate(job.submittedAt) }}</td>
+                    <td>
+                      <button class="btn btn-danger btn-sm" (click)="deleteJob(job.id!)">
+                        🗑️ Remove
+                      </button>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- PENDING REPORTS TAB -->
+  @if (activeTab === 'reports') {
+    <div class="reports-section fade-in">
+      @if (pendingReports.length === 0) {
+        <div class="empty-state">
+          <span class="icon">✅</span>
+          <p>No pending reports to review</p>
+        </div>
+      } @else {
+        <div class="pending-list">
+          @for (report of pendingReports; track report.id) {
+            <div class="pending-card card">
+              <div class="pending-header">
+                <div>
+                  <span class="company-nm">{{ report.companyName }}</span>
+                  <span class="scam-tag">{{ getScamLabel(report.scamType) }}</span>
+                </div>
+                <span class="badge badge-pending">PENDING REVIEW</span>
+              </div>
+              <p class="report-text">{{ report.description }}</p>
+              <div class="pending-meta">
+                <span>👤 {{ report.reporterName }}</span>
+                @if (report.college) { <span>🎓 {{ report.college }}</span> }
+                <span>📅 {{ formatDate(report.reportedAt) }}</span>
+                <span>👍 {{ report.upvotes }} upvotes</span>
+              </div>
+              <div class="pending-actions">
+                <button class="btn btn-success btn-sm" (click)="verifyReport(report.id!)">
+                  ✅ Verify Report
+                </button>
+                <button class="btn btn-outline btn-sm" (click)="dismissReport(report.id!)">
+                  ✕ Dismiss
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  }
+
+  <!-- ALL ANALYSES TAB -->
+  @if (activeTab === 'all') {
+    <div class="all-section fade-in">
+      <div class="card">
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Job Title</th>
+                <th>Company</th>
+                <th>Risk Score</th>
+                <th>Risk Level</th>
+                <th>Fraud?</th>
+                <th>Submitted By</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (job of allJobs; track job.id) {
+                <tr>
+                  <td style="color:var(--text-muted)">{{ job.id }}</td>
+                  <td><strong>{{ job.title }}</strong></td>
+                  <td>{{ job.company }}</td>
+                  <td>
+                    <div style="display:flex;align-items:center;gap:8px">
+                      <div class="risk-bar-container" style="width:60px">
+                        <div class="risk-bar" [ngClass]="getScoreBarClass(job.riskScore)"
+                             [style.width.%]="job.riskScore"></div>
+                      </div>
+                      <span style="font-size:0.8rem">{{ job.riskScore }}</span>
+                    </div>
+                  </td>
+                  <td><span [class]="getRiskClass(job.riskLevel)">{{ job.riskLevel }}</span></td>
+                  <td>
+                    @if (job.flaggedAsFraud) {
+                      <span class="badge badge-critical">🚫 YES</span>
+                    } @else {
+                      <span style="color:var(--text-muted);font-size:0.85rem">—</span>
+                    }
+                  </td>
+                  <td>{{ job.submittedBy || '—' }}</td>
+                  <td>{{ formatDate(job.submittedAt) }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  }
+
+</div>

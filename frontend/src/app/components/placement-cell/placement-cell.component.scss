@@ -1,0 +1,178 @@
+.placement-page {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Header */
+.cell-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, var(--bg-card), #1A3A1A);
+  border: 1px solid rgba(76,175,80,0.2);
+  border-radius: 16px;
+  padding: 24px 28px;
+}
+
+.cell-title-area {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.cell-icon { font-size: 2.5rem; }
+
+.college-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  border-radius: 20px;
+  background: rgba(46,125,50,0.15);
+  border: 1px solid rgba(76,175,80,0.3);
+  color: #66BB6A;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* Tabs */
+.tab-bar {
+  display: flex;
+  gap: 4px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 6px;
+  flex-wrap: wrap;
+}
+
+.tab-btn {
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: 'Roboto', sans-serif;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+
+  &:hover { color: var(--text-primary); background: rgba(255,255,255,0.05); }
+
+  &.active {
+    background: var(--primary);
+    color: #fff;
+    box-shadow: 0 2px 12px var(--glow-maroon);
+  }
+}
+
+/* Overview */
+.overview-section { display: flex; flex-direction: column; gap: 24px; }
+
+/* Risk groups */
+.risk-group { margin-bottom: 20px; }
+.risk-group-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.group-count { font-size: 0.8rem; color: var(--text-muted); }
+
+.group-jobs { display: flex; flex-direction: column; gap: 8px; }
+
+.mini-job {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 14px;
+  background: var(--bg-surface);
+  border-radius: 8px;
+  font-size: 0.85rem;
+}
+
+.mj-title { flex: 1; font-weight: 500; color: var(--text-primary); }
+.mj-company { flex: 1; color: var(--text-muted); font-size: 0.8rem; }
+.mj-score {
+  background: rgba(139,0,0,0.2);
+  color: #EF5350;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+/* Action card */
+.card-title { font-size: 1rem; font-weight: 600; margin-bottom: 16px; }
+
+.actions-list { display: flex; flex-direction: column; gap: 12px; }
+
+.action-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px;
+  border-radius: 10px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  text-decoration: none;
+  transition: all 0.2s ease;
+
+  &:hover { border-color: var(--accent); background: rgba(244,196,48,0.05); }
+
+  strong { display: block; color: var(--text-primary); font-size: 0.875rem; margin-bottom: 2px; }
+  p { color: var(--text-muted); font-size: 0.78rem; }
+}
+
+.action-icon { font-size: 1.5rem; flex-shrink: 0; }
+
+/* Advisory */
+.advisory { display: flex; flex-direction: column; gap: 12px; }
+
+.advisory-item {
+  padding: 12px 16px;
+  border-radius: 10px;
+  border-left: 3px solid;
+
+  strong { display: block; font-size: 0.85rem; margin-bottom: 4px; }
+  p { font-size: 0.8rem; color: var(--text-muted); line-height: 1.4; }
+
+  &.critical { background: rgba(74,0,0,0.2); border-color: #FF1744; strong { color: #EF5350; } }
+  &.warning  { background: rgba(230,81,0,0.1); border-color: #FFA726; strong { color: #FFA726; } }
+  &.success  { background: rgba(46,125,50,0.1); border-color: #66BB6A; strong { color: #66BB6A; } }
+}
+
+/* Pending reports */
+.pending-list { display: flex; flex-direction: column; gap: 16px; }
+
+.pending-card { display: flex; flex-direction: column; gap: 12px; }
+
+.pending-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.company-nm { font-size: 1rem; font-weight: 700; color: var(--text-primary); display: block; margin-bottom: 4px; }
+.scam-tag { font-size: 0.78rem; color: #EF5350; }
+
+.report-text { font-size: 0.875rem; color: var(--text-secondary); line-height: 1.6; }
+
+.pending-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.pending-actions { display: flex; gap: 10px; }
+
+section-title { font-size: 1.1rem; font-weight: 600; }
+
+@media (max-width: 768px) {
+  .cell-header { flex-direction: column; gap: 16px; }
+  .tab-bar { overflow-x: auto; }
+}
