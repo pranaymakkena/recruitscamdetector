@@ -3,8 +3,6 @@
 > Protecting students and job seekers from fraudulent job postings in the Indian recruitment market.
 
 ![Platform](https://img.shields.io/badge/Platform-Web-blue)
-![Backend](https://img.shields.io/badge/Backend-Spring%20Boot%203.3-green)
-![Frontend](https://img.shields.io/badge/Frontend-Angular%2021-red)
 ![Java](https://img.shields.io/badge/Java-21-orange)
 ![License](https://img.shields.io/badge/License-MIT-brightgreen)
 
